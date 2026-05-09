@@ -5,7 +5,7 @@ import {
   getSessionByCode,
   getSessionResults,
   closeSession
-} from "../controllers/sessionController.js";
+} from "../controllers/sessionController";
 
 const router = express.Router();
 

@@ -1,8 +1,5 @@
 import express from "express";
-import {
-  createVote,
-  getVotesBySession
-} from "../controllers/voteController.js";
+import { createVote, getVotesBySession } from "../controllers/voteController";
 
 const router = express.Router();
 

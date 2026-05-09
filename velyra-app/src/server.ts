@@ -2,9 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import authRoutes from "./routes/authRoutes.js";
-import sessionRoutes from "./routes/sessionRoutes.js";
-import voteRoutes from "./routes/voteRoutes.js";
+import authRoutes from "./routes/authRoutes";
+import sessionRoutes from "./routes/sessionRoutes";
+import voteRoutes from "./routes/voteRoutes";
 
 dotenv.config();
 
@@ -13,7 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.json({
     message: "Velyra Vote API is running"
   });

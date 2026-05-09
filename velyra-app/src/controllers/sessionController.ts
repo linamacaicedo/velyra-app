@@ -1,10 +1,11 @@
-import supabase from "../config/supabase.js";
+import { Request, Response } from "express";
+import supabase from "../config/supabase";
 
 const generateCode = () => {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
 };
 
-export const createSession = async (req, res) => {
+export const createSession = async (req: Request, res: Response) => {
   try {
     const { hostId, title, question, options } = req.body;
 
@@ -16,7 +17,7 @@ export const createSession = async (req, res) => {
 
     const code = generateCode();
 
-    const { data: sessionData, error: sessionError } = await supabase
+    const { data: session, error: sessionError } = await supabase
       .from("sessions")
       .insert([
         {
@@ -27,7 +28,8 @@ export const createSession = async (req, res) => {
           is_active: true
         }
       ])
-      .select();
+      .select()
+      .single();
 
     if (sessionError) {
       return res.status(500).json({
@@ -35,14 +37,12 @@ export const createSession = async (req, res) => {
       });
     }
 
-    const sessionId = sessionData[0].id;
-
-    const formattedOptions = options.map((option) => ({
-      session_id: sessionId,
+    const formattedOptions = options.map((option: string) => ({
+      session_id: session.id,
       text: option
     }));
 
-    const { data: optionsData, error: optionsError } = await supabase
+    const { data: createdOptions, error: optionsError } = await supabase
       .from("options")
       .insert(formattedOptions)
       .select();
@@ -53,19 +53,19 @@ export const createSession = async (req, res) => {
       });
     }
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Session created successfully",
-      session: sessionData[0],
-      options: optionsData
+      session,
+      options: createdOptions
     });
-  } catch (error) {
-    res.status(500).json({
+  } catch (error: any) {
+    return res.status(500).json({
       error: error.message
     });
   }
 };
 
-export const getSessionsByHost = async (req, res) => {
+export const getSessionsByHost = async (req: Request, res: Response) => {
   try {
     const { hostId } = req.params;
 
@@ -81,24 +81,24 @@ export const getSessionsByHost = async (req, res) => {
       });
     }
 
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({
+    return res.status(200).json(data);
+  } catch (error: any) {
+    return res.status(500).json({
       error: error.message
     });
   }
 };
 
-export const getSessionByCode = async (req, res) => {
+export const getSessionByCode = async (req: Request, res: Response) => {
   try {
     const { code } = req.params;
 
     const { data: session, error: sessionError } = await supabase
       .from("sessions")
       .select("*")
-      .eq("code", code)
+      .eq("code", String(code).toUpperCase())
       .eq("is_active", true)
-      .single();
+      .maybeSingle();
 
     if (sessionError || !session) {
       return res.status(404).json({
@@ -117,18 +117,18 @@ export const getSessionByCode = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       session,
       options
     });
-  } catch (error) {
-    res.status(500).json({
+  } catch (error: any) {
+    return res.status(500).json({
       error: error.message
     });
   }
 };
 
-export const getSessionResults = async (req, res) => {
+export const getSessionResults = async (req: Request, res: Response) => {
   try {
     const { sessionId } = req.params;
 
@@ -154,8 +154,8 @@ export const getSessionResults = async (req, res) => {
       });
     }
 
-    const results = options.map((option) => {
-      const count = votes.filter((vote) => vote.option_id === option.id).length;
+    const results = options.map((option: any) => {
+      const count = votes.filter((vote: any) => vote.option_id === option.id).length;
 
       return {
         optionId: option.id,
@@ -164,19 +164,19 @@ export const getSessionResults = async (req, res) => {
       };
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       sessionId,
       totalVotes: votes.length,
       results
     });
-  } catch (error) {
-    res.status(500).json({
+  } catch (error: any) {
+    return res.status(500).json({
       error: error.message
     });
   }
 };
 
-export const closeSession = async (req, res) => {
+export const closeSession = async (req: Request, res: Response) => {
   try {
     const { sessionId } = req.params;
 
@@ -186,7 +186,8 @@ export const closeSession = async (req, res) => {
         is_active: false
       })
       .eq("id", sessionId)
-      .select();
+      .select()
+      .single();
 
     if (error) {
       return res.status(500).json({
@@ -194,12 +195,12 @@ export const closeSession = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Session closed successfully",
-      session: data[0]
+      session: data
     });
-  } catch (error) {
-    res.status(500).json({
+  } catch (error: any) {
+    return res.status(500).json({
       error: error.message
     });
   }

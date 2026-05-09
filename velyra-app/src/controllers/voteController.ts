@@ -1,6 +1,7 @@
-import supabase from "../config/supabase.js";
+import { Request, Response } from "express";
+import supabase from "../config/supabase";
 
-export const createVote = async (req, res) => {
+export const createVote = async (req: Request, res: Response) => {
   try {
     const { sessionId, optionId, voterName } = req.body;
 
@@ -15,7 +16,7 @@ export const createVote = async (req, res) => {
       .select("*")
       .eq("id", sessionId)
       .eq("is_active", true)
-      .single();
+      .maybeSingle();
 
     if (sessionError || !session) {
       return res.status(404).json({
@@ -28,7 +29,7 @@ export const createVote = async (req, res) => {
       .select("*")
       .eq("id", optionId)
       .eq("session_id", sessionId)
-      .single();
+      .maybeSingle();
 
     if (optionError || !option) {
       return res.status(404).json({
@@ -41,7 +42,7 @@ export const createVote = async (req, res) => {
       .select("*")
       .eq("session_id", sessionId)
       .eq("voter_name", voterName)
-      .single();
+      .maybeSingle();
 
     if (existingVote) {
       return res.status(400).json({
@@ -58,7 +59,8 @@ export const createVote = async (req, res) => {
           voter_name: voterName
         }
       ])
-      .select();
+      .select()
+      .single();
 
     if (error) {
       return res.status(500).json({
@@ -66,18 +68,18 @@ export const createVote = async (req, res) => {
       });
     }
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Vote registered successfully",
-      vote: data[0]
+      vote: data
     });
-  } catch (error) {
-    res.status(500).json({
+  } catch (error: any) {
+    return res.status(500).json({
       error: error.message
     });
   }
 };
 
-export const getVotesBySession = async (req, res) => {
+export const getVotesBySession = async (req: Request, res: Response) => {
   try {
     const { sessionId } = req.params;
 
@@ -92,9 +94,9 @@ export const getVotesBySession = async (req, res) => {
       });
     }
 
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({
+    return res.status(200).json(data);
+  } catch (error: any) {
+    return res.status(500).json({
       error: error.message
     });
   }
