@@ -1,25 +1,35 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+type ButtonProps = {
+  children: React.ReactNode;
+  onClick?: () => void;
+  type?: "button" | "submit";
+  fullWidth?: boolean;
+};
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-}
-
-function Button({ children, ...props }: ButtonProps) {
+function Button({
+  children,
+  onClick,
+  type = "button",
+  fullWidth = false,
+}: ButtonProps) {
   return (
     <button
-      {...props}
-      className="
-        h-12
-        px-6
-        rounded-xl
-        bg-[#7B61FF]
+      type={type}
+      onClick={onClick}
+      className={`
+        h-14
+        rounded-2xl
+        bg-gradient-to-r
+        from-[#574BFF]
+        to-[#7A52FF]
         text-white
+        text-lg
         font-semibold
+        shadow-lg
         transition-all
-        duration-200
-        hover:opacity-90
-        active:scale-[0.98]
-      "
+        duration-300
+        hover:opacity-95
+        ${fullWidth ? "w-full" : "px-6"}
+      `}
     >
       {children}
     </button>

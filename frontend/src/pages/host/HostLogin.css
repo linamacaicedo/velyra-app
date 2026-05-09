@@ -1,0 +1,125 @@
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #eef3ff 0%, #e8ddff 45%, #f7e7ff 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 560px;
+  padding: 60px 40px;
+  border-radius: 38px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 40px rgba(80, 60, 180, 0.12);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.login-header h1 {
+  font-size: 5rem;
+  line-height: 1;
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #2557d6, #7d46ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.login-header span {
+  font-size: 2rem;
+  color: #4e34a5;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.login-form input {
+  width: 100%;
+  height: 72px;
+  border: none;
+  outline: none;
+  border-radius: 22px;
+  padding: 0 28px;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.92);
+  color: #2f2460;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+}
+
+.login-form input::placeholder {
+  color: #c3a7e7;
+}
+
+.login-form button {
+  width: 100%;
+  height: 72px;
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(90deg, #4e46ff, #7c4dff);
+  box-shadow: 0 12px 24px rgba(103, 76, 255, 0.35);
+  transition: 0.2s ease;
+  margin-top: 10px;
+}
+
+.login-form button:hover {
+  transform: translateY(-2px);
+}
+
+.register-text {
+  text-align: center;
+  color: #7467b5;
+  font-size: 1rem;
+}
+
+.register-text span {
+  font-weight: 700;
+  color: #4e34d4;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .login-card {
+    padding: 45px 24px;
+    border-radius: 28px;
+  }
+
+  .login-header h1 {
+    font-size: 3.5rem;
+  }
+
+  .login-header span {
+    font-size: 1.5rem;
+  }
+
+  .login-form input {
+    height: 64px;
+    font-size: 1rem;
+  }
+
+  .login-form button {
+    height: 64px;
+    font-size: 1.1rem;
+  }
+}
+.register-text a {
+  font-weight: 700;
+  color: #4e34d4;
+  text-decoration: none;
+}
