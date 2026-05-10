@@ -1,6 +1,5 @@
 .session-card {
   background: rgba(255, 255, 255, 0.55);
-
   border: 1px solid rgba(255, 255, 255, 0.75);
 
   backdrop-filter: blur(16px);
@@ -14,6 +13,12 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 
   transition: 0.3s;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  min-height: 260px;
 }
 
 .session-card:hover {
@@ -24,7 +29,7 @@
   display: flex;
   justify-content: flex-end;
 
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .session-status {
@@ -51,17 +56,25 @@
   color: #5a49df;
 }
 
+.session-content {
+  flex: 1;
+}
+
 .session-title {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   color: #25136b;
 
   margin-bottom: 12px;
+
+  line-height: 1.2;
 }
 
 .session-participants {
   color: #625f7a;
 
-  margin-bottom: 28px;
+  margin-bottom: 30px;
+
+  font-size: 1rem;
 }
 
 .session-button {

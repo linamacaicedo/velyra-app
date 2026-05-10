@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getSessionById, closeSession } from "../../api/sessionsApi";
 
 import "./SessionDetails.css";
 
 const SessionDetails = () => {
+  const navigate = useNavigate();
+
   const { id } = useParams();
 
   const [session, setSession] = useState<any>(null);
@@ -52,6 +55,13 @@ const SessionDetails = () => {
   return (
     <div className="session-details-page">
       <div className="session-details-card">
+        <button
+          className="back-button"
+          onClick={() => navigate("/host/dashboard")}
+        >
+          ← Dashboard
+        </button>
+
         <div className="session-header">
           <div>
             <p className="session-label">Live Session</p>
@@ -91,6 +101,13 @@ const SessionDetails = () => {
         ) : (
           <div className="session-closed-text">Session Closed</div>
         )}
+
+        <button
+          className="view-results-btn"
+          onClick={() => navigate(`/host/results/${session.id}`)}
+        >
+          View Live Results
+        </button>
       </div>
     </div>
   );

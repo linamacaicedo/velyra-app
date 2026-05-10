@@ -13,13 +13,20 @@ const SessionCard = ({ id, title, status, participants }: SessionCardProps) => {
 
   return (
     <div className="session-card">
-      <div className={`session-status ${status.toLowerCase()}`}>{status}</div>
+      <div className="session-top">
+        <div className={`session-status ${status.toLowerCase()}`}>{status}</div>
+      </div>
 
-      <h3>{title}</h3>
+      <div className="session-content">
+        <h3 className="session-title">{title}</h3>
 
-      <p>{participants}</p>
+        <p className="session-participants">{participants}</p>
+      </div>
 
-      <button onClick={() => navigate(`/host/session/${id}`)}>
+      <button
+        className="session-button"
+        onClick={() => navigate(`/host/session/${id}`)}
+      >
         Manage Session
       </button>
     </div>

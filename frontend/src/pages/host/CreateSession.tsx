@@ -1,85 +1,114 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { createSession } from "../../api/sessionsApi";
+
+import "./CreateSession.css";
 
 const CreateSession = () => {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
+
   const [question, setQuestion] = useState("");
 
-  const [option1, setOption1] = useState("");
-  const [option2, setOption2] = useState("");
+  const [options, setOptions] = useState(["", ""]);
 
-  const [loading, setLoading] = useState(false);
+  const handleOptionChange = (index: number, value: string) => {
+    const updatedOptions = [...options];
 
-  const handleCreateSession = async (e: React.FormEvent) => {
+    updatedOptions[index] = value;
+
+    setOptions(updatedOptions);
+  };
+
+  const addOption = () => {
+    setOptions([...options, ""]);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      setLoading(true);
-
       const host = JSON.parse(localStorage.getItem("host") || "{}");
 
-      if (!host.id) {
-        navigate("/host/login");
-        return;
-      }
+      const filteredOptions = options.filter((option) => option.trim() !== "");
 
-      await createSession(host.id, title, question, [option1, option2]);
+      const data = await createSession(
+        host.id,
+        title,
+        question,
+        filteredOptions,
+      );
 
-      alert("Session created successfully");
-
-      navigate("/host/dashboard");
+      navigate(`/host/session/${data.session.id}`);
     } catch (error: any) {
       alert(error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <div className="register-page">
-      <div className="register-card">
-        <h1 className="register-logo">Create Session</h1>
+    <div className="create-session-page">
+      <div className="create-session-card">
+        <button
+          className="back-button"
+          onClick={() => navigate("/host/dashboard")}
+        >
+          ← Dashboard
+        </button>
 
-        <p className="register-subtitle">Create a new live voting session</p>
+        <div className="create-header">
+          <p>Create a new live poll</p>
 
-        <form className="register-form" onSubmit={handleCreateSession}>
-          <input
-            type="text"
-            placeholder="Session Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
+          <h1>Create Session</h1>
+        </div>
 
-          <input
-            type="text"
-            placeholder="Question"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            required
-          />
+        <form className="create-form" onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label>Session Title</label>
 
-          <input
-            type="text"
-            placeholder="Option 1"
-            value={option1}
-            onChange={(e) => setOption1(e.target.value)}
-            required
-          />
+            <input
+              type="text"
+              placeholder="Title of your poll"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+          </div>
 
-          <input
-            type="text"
-            placeholder="Option 2"
-            value={option2}
-            onChange={(e) => setOption2(e.target.value)}
-            required
-          />
+          <div className="input-group">
+            <label>Question</label>
 
-          <button type="submit">
-            {loading ? "Creating session..." : "Create Session"}
+            <input
+              type="text"
+              placeholder="Poll question"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="options-wrapper">
+            <label>Options</label>
+
+            {options.map((option, index) => (
+              <input
+                key={index}
+                type="text"
+                placeholder={`Option ${index + 1}`}
+                value={option}
+                onChange={(e) => handleOptionChange(index, e.target.value)}
+                required
+              />
+            ))}
+          </div>
+
+          <button type="button" className="add-option-btn" onClick={addOption}>
+            + Add Option
+          </button>
+
+          <button type="submit" className="submit-session-btn">
+            Create Session
           </button>
         </form>
       </div>
