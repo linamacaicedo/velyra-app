@@ -1,42 +1,78 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { registerHost } from "../../api/authApi";
 import "./HostRegister.css";
 
-export default function HostRegister() {
+const HostRegister = () => {
+  const navigate = useNavigate();
+
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      await registerHost(fullName, email, password);
+
+      alert("Account created successfully");
+
+      navigate("/host/login");
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="register-page">
       <div className="register-card">
-        <div className="register-header">
-          <h1>VELYRA</h1>
-          <span>Vote System</span>
-        </div>
+        <h1 className="register-logo">VELYRA</h1>
 
-        <h2>Create account...</h2>
+        <p className="register-subtitle">Create your host account</p>
 
-        <form className="register-form">
-          <div className="name-row">
-            <input type="text" placeholder="First name" />
-            <input type="text" placeholder="Last name" />
-          </div>
+        <form className="register-form" onSubmit={handleRegister}>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            required
+          />
 
           <input
             type="email"
-            placeholder="Type your email...............Velyra@gmail.com"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
 
-          <input type="password" placeholder="Password" />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-          <label className="terms">
-            <input type="checkbox" />
-            <span>Agree to all terms and conditions</span>
-          </label>
-
-          <button type="submit">Create account</button>
-
-          <p className="login-text">
-            Already have an account? <Link to="/host/login">Login</Link>
-          </p>
+          <button type="submit">
+            {loading ? "Creating account..." : "Create Account"}
+          </button>
         </form>
+
+        <p className="register-footer">
+          Already have an account? <Link to="/host/login">Login</Link>
+        </p>
       </div>
     </div>
   );
-}
+};
+
+export default HostRegister;
