@@ -8,6 +8,7 @@ const HostDashboard = () => {
   const navigate = useNavigate();
 
   const [sessions, setSessions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadSessions = async () => {
@@ -24,11 +25,13 @@ const HostDashboard = () => {
         setSessions(data);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadSessions();
-  }, []);
+  }, [navigate]);
 
   const totalSessions = sessions.length;
 
@@ -63,20 +66,27 @@ const HostDashboard = () => {
         </div>
 
         <div className="stat-card">
-          <h2>{sessions.length}</h2>
+          <h2>0</h2>
           <p>Total Votes</p>
         </div>
       </div>
 
       <div className="sessions-grid">
-        {sessions.map((session) => (
-          <SessionCard
-            key={session.id}
-            title={session.title}
-            status={session.is_active ? "LIVE" : "ENDED"}
-            participants="0 participants"
-          />
-        ))}
+        {loading ? (
+          <p>Loading sessions...</p>
+        ) : sessions.length === 0 ? (
+          <p>No sessions created yet.</p>
+        ) : (
+          sessions.map((session) => (
+            <SessionCard
+              key={session.id}
+              id={session.id}
+              title={session.title}
+              status={session.is_active ? "LIVE" : "ENDED"}
+              participants="0 participants"
+            />
+          ))
+        )}
       </div>
     </div>
   );

@@ -1,29 +1,27 @@
+import { useNavigate } from "react-router-dom";
 import "./SessionCard.css";
 
 interface SessionCardProps {
+  id: string;
   title: string;
   status: string;
   participants: string;
 }
 
-const SessionCard = ({ title, status, participants }: SessionCardProps) => {
+const SessionCard = ({ id, title, status, participants }: SessionCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="session-card">
-      <div className="session-top">
-        <span
-          className={`session-status ${
-            status === "LIVE" ? "live" : status === "ENDED" ? "ended" : "draft"
-          }`}
-        >
-          {status}
-        </span>
-      </div>
+      <div className={`session-status ${status.toLowerCase()}`}>{status}</div>
 
-      <h2 className="session-title">{title}</h2>
+      <h3>{title}</h3>
 
-      <p className="session-participants">{participants}</p>
+      <p>{participants}</p>
 
-      <button className="session-button">Manage Session</button>
+      <button onClick={() => navigate(`/host/session/${id}`)}>
+        Manage Session
+      </button>
     </div>
   );
 };

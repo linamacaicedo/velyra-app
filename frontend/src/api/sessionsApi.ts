@@ -19,25 +19,33 @@ export const createSession = async (
     }),
   });
 
-  const data = await response.json();
-
   if (!response.ok) {
-    throw new Error(data.error || "Could not create session");
+    const errorData = await response.json();
+
+    throw new Error(errorData.error || "Could not create session");
   }
 
-  return data;
+  return response.json();
 };
 
 export const getSessionsByHost = async (hostId: string) => {
   const response = await fetch(`${API_URL}/sessions/host/${hostId}`);
 
-  const data = await response.json();
-
   if (!response.ok) {
-    throw new Error(data.error || "Could not get sessions");
+    throw new Error("Could not get sessions");
   }
 
-  return data;
+  return response.json();
+};
+
+export const getSessionById = async (sessionId: string) => {
+  const response = await fetch(`${API_URL}/sessions/${sessionId}`);
+
+  if (!response.ok) {
+    throw new Error("Could not get session");
+  }
+
+  return response.json();
 };
 
 export const getSessionByCode = async (code: string) => {
