@@ -1,71 +1,80 @@
 .live-results-page {
   min-height: 100vh;
 
-  padding: 40px;
-
-  background: #f3eefc;
+  padding: 50px;
 }
 
-.back-button {
+.results-back-btn {
   border: none;
 
-  background: transparent;
+  background: rgba(255, 255, 255, 0.7);
 
-  color: #5f46ff;
+  padding: 14px 22px;
 
-  font-size: 1rem;
+  border-radius: 16px;
 
+  font-size: 16px;
   font-weight: 700;
+
+  color: #4c35c2;
 
   cursor: pointer;
 
-  margin-bottom: 24px;
-}
-
-.results-card {
-  background: rgba(255, 255, 255, 0.6);
-
-  backdrop-filter: blur(18px);
-
-  border-radius: 32px;
-
-  padding: 40px;
-
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  margin-bottom: 30px;
 }
 
 .results-header {
-  margin-bottom: 40px;
+  text-align: center;
+
+  margin-bottom: 60px;
 }
 
 .results-header p {
-  color: #6b5cff;
+  color: #7c5cff;
 
   font-weight: 700;
 
-  margin-bottom: 10px;
+  letter-spacing: 3px;
+
+  margin-bottom: 16px;
 }
 
 .results-header h1 {
-  color: #25136b;
+  font-size: 64px;
 
-  font-size: 3rem;
+  color: #2d1b69;
+
+  margin-bottom: 18px;
 }
 
-.results-chart {
+.results-header span {
+  font-size: 20px;
+
+  color: #6f6b8a;
+}
+
+.results-container {
+  max-width: 1000px;
+
+  margin: 0 auto;
+
   display: flex;
 
   flex-direction: column;
 
-  gap: 30px;
+  gap: 28px;
 }
 
-.result-item {
-  display: flex;
+.result-card {
+  background: rgba(255, 255, 255, 0.6);
 
-  flex-direction: column;
+  border-radius: 28px;
 
-  gap: 12px;
+  padding: 30px;
+
+  backdrop-filter: blur(18px);
+
+  box-shadow: 0 12px 30px rgba(92, 73, 255, 0.08);
 }
 
 .result-top {
@@ -73,29 +82,51 @@
 
   justify-content: space-between;
 
-  font-weight: 700;
+  align-items: center;
 
-  color: #25136b;
+  margin-bottom: 18px;
 }
 
-.bar-background {
+.result-top h2 {
+  color: #2d1b69;
+
+  font-size: 28px;
+}
+
+.result-top span {
+  font-size: 28px;
+
+  font-weight: 700;
+
+  color: #6a4cff;
+}
+
+.progress-bar {
   width: 100%;
 
-  height: 28px;
-
-  background: rgba(95, 70, 255, 0.12);
+  height: 24px;
 
   border-radius: 999px;
 
+  background: rgba(120, 110, 255, 0.15);
+
   overflow: hidden;
+
+  margin-bottom: 14px;
 }
 
-.bar-fill {
+.progress-fill {
   height: 100%;
 
   border-radius: 999px;
 
-  background: linear-gradient(135deg, #5f46ff, #8d63ff);
+  background: linear-gradient(90deg, #5f46ff, #8f67ff);
 
-  transition: 0.5s ease;
+  transition: width 0.5s ease;
+}
+
+.result-card p {
+  color: #6f6b8a;
+
+  font-size: 18px;
 }

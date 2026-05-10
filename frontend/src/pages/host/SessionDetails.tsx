@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 
 import { useNavigate, useParams } from "react-router-dom";
 
+import { QRCodeCanvas } from "qrcode.react";
+
 import { getSessionById, closeSession } from "../../api/sessionsApi";
 
 import "./SessionDetails.css";
@@ -52,6 +54,8 @@ const SessionDetails = () => {
     return <h1>Loading...</h1>;
   }
 
+  const voteUrl = `${window.location.origin}/vote/session/${session.code}`;
+
   return (
     <div className="session-details-page">
       <div className="session-details-card">
@@ -84,6 +88,16 @@ const SessionDetails = () => {
           <p>Session Code</p>
 
           <h3>{session.code}</h3>
+        </div>
+
+        <div className="qr-section">
+          <h3>Scan to Vote</h3>
+
+          <div className="qr-box">
+            <QRCodeCanvas value={voteUrl} size={180} />
+          </div>
+
+          <p className="qr-link">{voteUrl}</p>
         </div>
 
         <div className="options-list">
