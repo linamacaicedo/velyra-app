@@ -1,29 +1,59 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import { useNavigate, useParams } from "react-router-dom";
+
 import { createVote } from "../../api/votesApi";
 
+import { getSessionByCode } from "../../api/sessionsApi";
+
 function VotePage() {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const { session, options } = location.state || {};
+  const { code } = useParams();
+
+  const [session, setSession] = useState<any>(null);
+
+  const [options, setOptions] = useState<any[]>([]);
 
   const [voterName, setVoterName] = useState("");
+
   const [selectedOption, setSelectedOption] = useState("");
+
   const [error, setError] = useState("");
+
   const [loading, setLoading] = useState(false);
 
-  if (!session || !options) {
-    return <div>No session data found</div>;
-  }
+  const [pageLoading, setPageLoading] = useState(true);
+
+  useEffect(() => {
+    const loadSession = async () => {
+      try {
+        if (!code) return;
+
+        const data = await getSessionByCode(code);
+
+        setSession(data.session);
+
+        setOptions(data.options);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+
+    loadSession();
+  }, [code]);
 
   const handleVote = async () => {
     try {
       setLoading(true);
+
       setError("");
 
       if (!voterName || !selectedOption) {
         setError("Please enter your name and select an option");
+
         return;
       }
 
@@ -37,6 +67,14 @@ function VotePage() {
     }
   };
 
+  if (pageLoading) {
+    return <h1>Loading...</h1>;
+  }
+
+  if (!session) {
+    return <h1>Session not found</h1>;
+  }
+
   return (
     <div
       style={{
@@ -45,7 +83,7 @@ function VotePage() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: "24px"
+        padding: "24px",
       }}
     >
       <div
@@ -55,14 +93,24 @@ function VotePage() {
           backgroundColor: "white",
           borderRadius: "24px",
           padding: "32px",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.12)"
+          boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
         }}
       >
-        <h1 style={{ color: "#4338CA", marginBottom: "8px" }}>
+        <h1
+          style={{
+            color: "#4338CA",
+            marginBottom: "8px",
+          }}
+        >
           {session.title}
         </h1>
 
-        <p style={{ color: "#555", marginBottom: "24px" }}>
+        <p
+          style={{
+            color: "#555",
+            marginBottom: "24px",
+          }}
+        >
           {session.question}
         </p>
 
@@ -77,11 +125,17 @@ function VotePage() {
             borderRadius: "12px",
             border: "1px solid #DDD",
             marginBottom: "20px",
-            fontSize: "16px"
+            fontSize: "16px",
           }}
         />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+          }}
+        >
           {options.map((option: any) => (
             <button
               key={option.id}
@@ -98,7 +152,7 @@ function VotePage() {
                 color: "#222",
                 fontSize: "16px",
                 cursor: "pointer",
-                textAlign: "left"
+                textAlign: "left",
               }}
             >
               {option.text}
@@ -119,14 +173,20 @@ function VotePage() {
             color: "white",
             fontSize: "18px",
             fontWeight: "bold",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         >
           {loading ? "Submitting..." : "Submit Vote"}
         </button>
 
         {error && (
-          <p style={{ color: "red", marginTop: "16px", textAlign: "center" }}>
+          <p
+            style={{
+              color: "red",
+              marginTop: "16px",
+              textAlign: "center",
+            }}
+          >
             {error}
           </p>
         )}

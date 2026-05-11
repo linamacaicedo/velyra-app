@@ -1,0 +1,104 @@
+.session-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+
+  backdrop-filter: blur(16px);
+
+  border-radius: 30px;
+
+  padding: 28px;
+
+  box-shadow:
+    0 20px 40px rgba(91, 72, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+
+  transition: 0.3s;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  min-height: 260px;
+}
+
+.session-card:hover {
+  transform: translateY(-5px);
+}
+
+.session-top {
+  display: flex;
+  justify-content: flex-end;
+
+  margin-bottom: 20px;
+}
+
+.session-status {
+  padding: 10px 18px;
+
+  border-radius: 999px;
+
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.live {
+  background: rgba(80, 255, 160, 0.18);
+  color: #1f9d62;
+}
+
+.ended {
+  background: rgba(255, 120, 120, 0.18);
+  color: #d84343;
+}
+
+.draft {
+  background: rgba(120, 120, 255, 0.16);
+  color: #5a49df;
+}
+
+.session-content {
+  flex: 1;
+}
+
+.session-title {
+  font-size: 1.8rem;
+  color: #25136b;
+
+  margin-bottom: 12px;
+
+  line-height: 1.2;
+}
+
+.session-participants {
+  color: #625f7a;
+
+  margin-bottom: 30px;
+
+  font-size: 1rem;
+}
+
+.session-button {
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  background: linear-gradient(135deg, #5f46ff, #8d63ff);
+
+  color: white;
+
+  padding: 16px;
+
+  border-radius: 18px;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.session-button:hover {
+  transform: translateY(-2px);
+}

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+
 import supabase from "../config/supabase";
 
 const generateCode = () => {
@@ -11,7 +12,7 @@ export const createSession = async (req: Request, res: Response) => {
 
     if (!hostId || !title || !question || !options || options.length < 2) {
       return res.status(400).json({
-        error: "hostId, title, question and at least two options are required"
+        error: "hostId, title, question and at least two options are required",
       });
     }
 
@@ -25,21 +26,21 @@ export const createSession = async (req: Request, res: Response) => {
           title,
           question,
           code,
-          is_active: true
-        }
+          is_active: true,
+        },
       ])
       .select()
       .single();
 
     if (sessionError) {
       return res.status(500).json({
-        error: sessionError.message
+        error: sessionError.message,
       });
     }
 
     const formattedOptions = options.map((option: string) => ({
       session_id: session.id,
-      text: option
+      text: option,
     }));
 
     const { data: createdOptions, error: optionsError } = await supabase
@@ -49,18 +50,18 @@ export const createSession = async (req: Request, res: Response) => {
 
     if (optionsError) {
       return res.status(500).json({
-        error: optionsError.message
+        error: optionsError.message,
       });
     }
 
     return res.status(201).json({
       message: "Session created successfully",
       session,
-      options: createdOptions
+      options: createdOptions,
     });
   } catch (error: any) {
     return res.status(500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -73,18 +74,121 @@ export const getSessionsByHost = async (req: Request, res: Response) => {
       .from("sessions")
       .select("*")
       .eq("host_id", hostId)
-      .order("created_at", { ascending: false });
+      .order("created_at", {
+        ascending: false,
+      });
 
     if (error) {
       return res.status(500).json({
-        error: error.message
+        error: error.message,
       });
     }
 
     return res.status(200).json(data);
   } catch (error: any) {
     return res.status(500).json({
-      error: error.message
+      error: error.message,
+    });
+  }
+};
+
+export const getDashboardStats = async (req: Request, res: Response) => {
+  try {
+    const { hostId } = req.params;
+
+    const { data: sessions, error: sessionsError } = await supabase
+      .from("sessions")
+      .select("*")
+      .eq("host_id", hostId);
+
+    if (sessionsError) {
+      return res.status(500).json({
+        error: sessionsError.message,
+      });
+    }
+
+    const sessionIds = sessions.map((session: any) => session.id);
+
+    const { data: votes, error: votesError } = await supabase
+      .from("votes")
+      .select("*")
+      .in("session_id", sessionIds);
+
+    if (votesError) {
+      return res.status(500).json({
+        error: votesError.message,
+      });
+    }
+
+    const totalVotes = votes.length;
+
+    const liveSessions = sessions.filter(
+      (session: any) => session.is_active,
+    ).length;
+
+    let topSession = null;
+
+    let maxVotes = 0;
+
+    sessions.forEach((session: any) => {
+      const sessionVotes = votes.filter(
+        (vote: any) => vote.session_id === session.id,
+      ).length;
+
+      if (sessionVotes > maxVotes) {
+        maxVotes = sessionVotes;
+
+        topSession = session;
+      }
+    });
+
+    return res.status(200).json({
+      totalSessions: sessions.length,
+      liveSessions,
+      totalVotes,
+      topSession,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+export const getSessionById = async (req: Request, res: Response) => {
+  try {
+    const { sessionId } = req.params;
+
+    const { data: session, error: sessionError } = await supabase
+      .from("sessions")
+      .select("*")
+      .eq("id", sessionId)
+      .single();
+
+    if (sessionError) {
+      return res.status(500).json({
+        error: sessionError.message,
+      });
+    }
+
+    const { data: options, error: optionsError } = await supabase
+      .from("options")
+      .select("*")
+      .eq("session_id", sessionId);
+
+    if (optionsError) {
+      return res.status(500).json({
+        error: optionsError.message,
+      });
+    }
+
+    return res.status(200).json({
+      session,
+      options,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      error: error.message,
     });
   }
 };
@@ -102,7 +206,7 @@ export const getSessionByCode = async (req: Request, res: Response) => {
 
     if (sessionError || !session) {
       return res.status(404).json({
-        error: "Active session not found"
+        error: "Active session not found",
       });
     }
 
@@ -113,17 +217,17 @@ export const getSessionByCode = async (req: Request, res: Response) => {
 
     if (optionsError) {
       return res.status(500).json({
-        error: optionsError.message
+        error: optionsError.message,
       });
     }
 
     return res.status(200).json({
       session,
-      options
+      options,
     });
   } catch (error: any) {
     return res.status(500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -139,7 +243,7 @@ export const getSessionResults = async (req: Request, res: Response) => {
 
     if (optionsError) {
       return res.status(500).json({
-        error: optionsError.message
+        error: optionsError.message,
       });
     }
 
@@ -150,28 +254,30 @@ export const getSessionResults = async (req: Request, res: Response) => {
 
     if (votesError) {
       return res.status(500).json({
-        error: votesError.message
+        error: votesError.message,
       });
     }
 
     const results = options.map((option: any) => {
-      const count = votes.filter((vote: any) => vote.option_id === option.id).length;
+      const count = votes.filter(
+        (vote: any) => vote.option_id === option.id,
+      ).length;
 
       return {
         optionId: option.id,
         optionText: option.text,
-        votes: count
+        votes: count,
       };
     });
 
     return res.status(200).json({
       sessionId,
       totalVotes: votes.length,
-      results
+      results,
     });
   } catch (error: any) {
     return res.status(500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -183,7 +289,7 @@ export const closeSession = async (req: Request, res: Response) => {
     const { data, error } = await supabase
       .from("sessions")
       .update({
-        is_active: false
+        is_active: false,
       })
       .eq("id", sessionId)
       .select()
@@ -191,17 +297,17 @@ export const closeSession = async (req: Request, res: Response) => {
 
     if (error) {
       return res.status(500).json({
-        error: error.message
+        error: error.message,
       });
     }
 
     return res.status(200).json({
       message: "Session closed successfully",
-      session: data
+      session: data,
     });
   } catch (error: any) {
     return res.status(500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };

@@ -1,29 +1,94 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { loginHost } from "../../api/authApi";
 import "./HostLogin.css";
 
 export default function HostLogin() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const data = await loginHost(email, password);
+
+      localStorage.setItem("host", JSON.stringify(data.host));
+
+      navigate("/host/dashboard");
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
   return (
     <div className="login-page">
       <div className="login-card">
-        <div className="login-header">
-          <h1>VELYRA</h1>
-          <span>Vote System</span>
+        <div className="login-left">
+          <div className="login-brand">
+            <h1>VELYRA</h1>
+            <p>Host Portal</p>
+          </div>
+
+          <div className="login-content">
+            <span className="login-badge">Real-time audience interaction</span>
+
+            <h2>
+              Welcome
+              <br />
+              back host
+            </h2>
+
+            <p>
+              Login to manage your live sessions, create polls and view audience
+              results instantly.
+            </p>
+          </div>
         </div>
 
-        <form className="login-form">
-          <input
-            type="email"
-            placeholder="Type your email...............Velyra@gmail.com"
-          />
+        <div className="login-right">
+          <form className="login-form" onSubmit={handleLogin}>
+            <div className="form-header">
+              <h3>Login</h3>
+              <p>Access your Velyra dashboard</p>
+            </div>
 
-          <input type="password" placeholder="Password" />
+            <div className="input-group">
+              <label>Email</label>
 
-          <button type="submit">Login</button>
+              <input
+                type="email"
+                placeholder="velyra@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-          <p className="register-text">
-            Don’t have an account? <Link to="/host/register">Register</Link>
-          </p>
-        </form>
+            <div className="input-group">
+              <label>Password</label>
+
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button type="submit" className="login-button">
+              Login
+            </button>
+
+            <p className="register-text">
+              Don’t have an account?
+              <Link to="/host/register"> Register</Link>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );
