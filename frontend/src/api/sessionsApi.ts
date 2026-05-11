@@ -38,6 +38,16 @@ export const getSessionsByHost = async (hostId: string) => {
   return response.json();
 };
 
+export const getDashboardStats = async (hostId: string) => {
+  const response = await fetch(`${API_URL}/sessions/host/${hostId}/stats`);
+
+  if (!response.ok) {
+    throw new Error("Could not get dashboard stats");
+  }
+
+  return response.json();
+};
+
 export const getSessionById = async (sessionId: string) => {
   const response = await fetch(`${API_URL}/sessions/${sessionId}`);
 

@@ -54,7 +54,7 @@ const SessionDetails = () => {
     return <h1>Loading...</h1>;
   }
 
-  const voteUrl = `${window.location.origin}/vote/session/${session.code}`;
+  const voteUrl = `http://192.168.1.33:5173/vote/session/${session.code}`;
 
   return (
     <div className="session-details-page">

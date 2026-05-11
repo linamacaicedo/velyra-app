@@ -1,0 +1,163 @@
+.join-page {
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 24px;
+
+  background: linear-gradient(180deg, #f6f2ff 0%, #d9c8ff 100%);
+}
+
+.join-card {
+  width: 100%;
+  max-width: 460px;
+
+  background: rgba(255, 255, 255, 0.55);
+
+  backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255, 255, 255, 0.7);
+
+  border-radius: 32px;
+
+  padding: 40px;
+
+  box-shadow: 0 20px 40px rgba(91, 72, 240, 0.12);
+
+  text-align: center;
+}
+
+.join-logo {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 6px;
+
+  color: #5b4cf0;
+
+  margin-bottom: 24px;
+}
+
+.join-card h1 {
+  font-size: 42px;
+  color: #2d1b69;
+
+  margin-bottom: 12px;
+}
+
+.join-subtitle {
+  color: #6d6a86;
+
+  font-size: 16px;
+  line-height: 1.6;
+
+  margin-bottom: 30px;
+}
+
+.join-input {
+  width: 100%;
+
+  padding: 18px;
+
+  border-radius: 18px;
+
+  border: 1px solid rgba(91, 72, 240, 0.15);
+
+  background: rgba(255, 255, 255, 0.8);
+
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 4px;
+  font-weight: 700;
+
+  color: #2d1b69;
+
+  outline: none;
+
+  margin-bottom: 20px;
+}
+
+.join-input:focus {
+  border: 1px solid #7c5cff;
+}
+
+.join-button {
+  width: 100%;
+
+  border: none;
+
+  padding: 18px;
+
+  border-radius: 18px;
+
+  background: linear-gradient(135deg, #5b4cf0, #8b5cf6);
+
+  color: white;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.join-button:hover {
+  transform: translateY(-2px);
+}
+
+.join-divider {
+  margin: 28px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #8b88a8;
+
+  font-weight: 700;
+}
+
+.join-divider::before,
+.join-divider::after {
+  content: "";
+
+  flex: 1;
+
+  height: 1px;
+
+  background: rgba(91, 72, 240, 0.12);
+}
+
+.join-divider span {
+  margin: 0 14px;
+}
+
+.qr-info-box {
+  background: rgba(124, 92, 255, 0.1);
+
+  border-radius: 22px;
+
+  padding: 24px;
+}
+
+.qr-info-box h3 {
+  color: #5b4cf0;
+
+  margin-bottom: 10px;
+}
+
+.qr-info-box p {
+  color: #666381;
+
+  line-height: 1.6;
+}
+
+.join-error {
+  margin-top: 20px;
+
+  color: #e53935;
+
+  font-weight: 600;
+}

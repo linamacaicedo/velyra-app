@@ -1,106 +1,86 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { getSessionByCode } from "../../api/sessionsApi";
 
-function JoinSession() {
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+import "./JoinSession.css";
 
+function JoinSession() {
   const navigate = useNavigate();
+
+  const [code, setCode] = useState("");
+
+  const [error, setError] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const handleJoinSession = async () => {
     try {
       setLoading(true);
+
       setError("");
+
+      if (!code.trim()) {
+        setError("Please enter a session code");
+        return;
+      }
 
       const data = await getSessionByCode(code);
 
-      navigate("/vote", {
+      navigate(`/vote/session/${data.session.code}`, {
         state: {
           session: data.session,
-          options: data.options
-        }
+          options: data.options,
+        },
       });
     } catch (error: any) {
-      setError(error.message);
+      setError(error.message || "Session not found");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background:
-          "linear-gradient(180deg, #F5F2FF 0%, #D8B4FE 100%)"
-      }}
-    >
-      <div
-        style={{
-          width: "320px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px"
-        }}
-      >
-        <h1
-          style={{
-            textAlign: "center",
-            color: "#4338CA",
-            fontSize: "42px",
-            fontWeight: "bold",
-            marginBottom: "20px"
-          }}
-        >
-          VELYRA
-        </h1>
+    <div className="join-page">
+      <div className="join-card">
+        <div className="join-logo">VELYRA</div>
+
+        <h1>Join a Live Session</h1>
+
+        <p className="join-subtitle">
+          Enter the code shared by the host or scan the QR code.
+        </p>
 
         <input
           type="text"
-          placeholder="Enter voting code"
+          placeholder="Enter session code"
           value={code}
           onChange={(e) => setCode(e.target.value.toUpperCase())}
-          style={{
-            padding: "16px",
-            borderRadius: "12px",
-            border: "none",
-            fontSize: "18px",
-            textAlign: "center"
-          }}
+          className="join-input"
         />
 
         <button
           onClick={handleJoinSession}
           disabled={loading}
-          style={{
-            padding: "16px",
-            borderRadius: "12px",
-            border: "none",
-            backgroundColor: "#5B4CF0",
-            color: "white",
-            fontSize: "18px",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
+          className="join-button"
         >
-          {loading ? "Loading..." : "Continue"}
+          {loading ? "Joining..." : "Join Session"}
         </button>
 
-        {error && (
-          <p
-            style={{
-              color: "red",
-              textAlign: "center"
-            }}
-          >
-            {error}
+        <div className="join-divider">
+          <span>OR</span>
+        </div>
+
+        <div className="qr-info-box">
+          <h3>Scan QR Code</h3>
+
+          <p>
+            Ask the host to display the session QR code and scan it with your
+            phone camera.
           </p>
-        )}
+        </div>
+
+        {error && <p className="join-error">{error}</p>}
       </div>
     </div>
   );

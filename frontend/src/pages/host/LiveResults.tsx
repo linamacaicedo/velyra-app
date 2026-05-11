@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { getSessionResults } from "../../api/sessionsApi";
 
+import { supabase } from "../../services/supabase";
+
 import "./LiveResults.css";
 
 const LiveResults = () => {
@@ -15,28 +17,41 @@ const LiveResults = () => {
 
   const [totalVotes, setTotalVotes] = useState(0);
 
+  const loadResults = async () => {
+    try {
+      if (!id) return;
+
+      const data = await getSessionResults(id);
+
+      setResults(data.results);
+
+      setTotalVotes(data.totalVotes);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const loadResults = async () => {
-      try {
-        if (!id) return;
-
-        const data = await getSessionResults(id);
-
-        setResults(data.results);
-
-        setTotalVotes(data.totalVotes);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     loadResults();
 
-    const interval = setInterval(() => {
-      loadResults();
-    }, 2000);
+    const channel = supabase
+      .channel("live-results")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "votes",
+        },
+        () => {
+          loadResults();
+        },
+      )
+      .subscribe();
 
-    return () => clearInterval(interval);
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [id]);
 
   return (
