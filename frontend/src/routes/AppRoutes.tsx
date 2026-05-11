@@ -23,10 +23,10 @@ function AppRoutes() {
       <Route path="/host/dashboard" element={<HostDashboard />} />
       <Route path="/host/create" element={<CreateSession />} />
       <Route path="/host/session/:id" element={<SessionDetails />} />
-      <Route path="/host/results/:id" element={<LiveResults />} />
+      <Route path="/host/results/:sessionId" element={<LiveResults />} />
 
-      <Route path="/vote" element={<JoinSession />} />
-      <Route path="/vote/session/:code" element={<VotePage />} />
+      <Route path="/join" element={<JoinSession />} />
+      <Route path="/vote" element={<VotePage />} />
       <Route path="/thank-you" element={<ThankYou />} />
     </Routes>
   );
