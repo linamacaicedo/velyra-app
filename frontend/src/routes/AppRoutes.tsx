@@ -30,6 +30,7 @@ function AppRoutes() {
 
       <Route path="/join" element={<JoinSession />} />
       <Route path="/vote" element={<VotePage />} />
+      <Route path="/vote/session/:code" element={<VotePage />} />
       <Route path="/thank-you" element={<ThankYou />} />
 
       <Route path="*" element={<Navigate to="/" />} />
