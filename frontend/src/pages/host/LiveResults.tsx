@@ -1,30 +1,25 @@
 import { useEffect, useState } from "react";
-
 import { useNavigate, useParams } from "react-router-dom";
 
 import { getSessionResults } from "../../api/sessionsApi";
-
 import { supabase } from "../../services/supabase";
 
 import "./LiveResults.css";
 
 const LiveResults = () => {
   const navigate = useNavigate();
-
-  const { id } = useParams();
+  const { sessionId } = useParams();
 
   const [results, setResults] = useState<any[]>([]);
-
   const [totalVotes, setTotalVotes] = useState(0);
 
   const loadResults = async () => {
     try {
-      if (!id) return;
+      if (!sessionId) return;
 
-      const data = await getSessionResults(id);
+      const data = await getSessionResults(sessionId);
 
       setResults(data.results);
-
       setTotalVotes(data.totalVotes);
     } catch (error) {
       console.error(error);
@@ -32,16 +27,19 @@ const LiveResults = () => {
   };
 
   useEffect(() => {
+    if (!sessionId) return;
+
     loadResults();
 
     const channel = supabase
-      .channel("live-results")
+      .channel(`live-results-${sessionId}`)
       .on(
         "postgres_changes",
         {
           event: "INSERT",
           schema: "public",
           table: "votes",
+          filter: `session_id=eq.${sessionId}`,
         },
         () => {
           loadResults();
@@ -52,7 +50,7 @@ const LiveResults = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [id]);
+  }, [sessionId]);
 
   return (
     <div className="live-results-page">
@@ -62,9 +60,7 @@ const LiveResults = () => {
 
       <div className="results-header">
         <p>LIVE RESULTS</p>
-
         <h1>Audience Voting</h1>
-
         <span>{totalVotes} votes received</span>
       </div>
 
@@ -77,7 +73,6 @@ const LiveResults = () => {
             <div className="result-card" key={result.optionId}>
               <div className="result-top">
                 <h2>{result.optionText}</h2>
-
                 <span>{percentage}%</span>
               </div>
 

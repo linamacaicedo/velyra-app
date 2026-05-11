@@ -16,23 +16,20 @@ import ThankYou from "../pages/voter/ThankYou";
 function AppRoutes() {
   return (
     <Routes>
-      {/* HOME */}
       <Route path="/" element={<Home />} />
 
-      {/* REDIRECTS */}
       <Route path="/login" element={<Navigate to="/host/login" />} />
       <Route path="/register" element={<Navigate to="/host/register" />} />
 
-      {/* HOST */}
       <Route path="/host/login" element={<HostLogin />} />
       <Route path="/host/register" element={<HostRegister />} />
       <Route path="/host/dashboard" element={<HostDashboard />} />
       <Route path="/host/create" element={<CreateSession />} />
       <Route path="/host/session/:id" element={<SessionDetails />} />
-      <Route path="/host/results/:id" element={<LiveResults />} />
+      <Route path="/host/results/:sessionId" element={<LiveResults />} />
 
-      {/* VOTER */}
-      <Route path="/vote" element={<JoinSession />} />
+      <Route path="/join" element={<JoinSession />} />
+      <Route path="/vote" element={<VotePage />} />
       <Route path="/vote/session/:code" element={<VotePage />} />
       <Route path="/thank-you" element={<ThankYou />} />
 
