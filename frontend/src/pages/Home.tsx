@@ -9,11 +9,11 @@ const Home = () => {
         <h1 className="home-logo">VELYRA</h1>
 
         <div className="home-nav-actions">
-          <Link to="/login" className="home-login">
+          <Link to="/host/login" className="home-login">
             Login
           </Link>
 
-          <Link to="/register" className="home-start-btn">
+          <Link to="/host/register" className="home-start-btn">
             Get Started
           </Link>
         </div>
@@ -39,7 +39,7 @@ const Home = () => {
               Start Hosting
             </Link>
 
-            <Link to="/join" className="home-secondary-btn">
+            <Link to="/vote" className="home-secondary-btn">
               Join Session
             </Link>
           </div>
@@ -48,15 +48,58 @@ const Home = () => {
         {/* RIGHT */}
         <div className="home-right">
           <div className="poll-card">
-            <div className="poll-top"></div>
+            <div className="live-badge">
+              <span className="live-dot"></span>
+              LIVE POLL
+            </div>
 
-            <div className="poll-box"></div>
+            <h2 className="poll-question">Which feature do you want next?</h2>
 
-            <div className="poll-box"></div>
+            <div className="poll-option">
+              <div className="poll-option-top">
+                <span>Realtime Charts</span>
+                <span>64%</span>
+              </div>
 
-            <div className="poll-box"></div>
+              <div className="poll-progress">
+                <div
+                  className="poll-progress-fill"
+                  style={{ width: "64%" }}
+                ></div>
+              </div>
+            </div>
 
-            <div className="poll-button"></div>
+            <div className="poll-option">
+              <div className="poll-option-top">
+                <span>QR Voting</span>
+                <span>23%</span>
+              </div>
+
+              <div className="poll-progress">
+                <div
+                  className="poll-progress-fill second"
+                  style={{ width: "23%" }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="poll-option">
+              <div className="poll-option-top">
+                <span>Dark Mode</span>
+                <span>13%</span>
+              </div>
+
+              <div className="poll-progress">
+                <div
+                  className="poll-progress-fill third"
+                  style={{ width: "13%" }}
+                ></div>
+              </div>
+            </div>
+
+            <div className="poll-footer">
+              <p>2,451 votes submitted</p>
+            </div>
           </div>
         </div>
       </section>
