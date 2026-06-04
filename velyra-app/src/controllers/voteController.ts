@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import Boom from "@hapi/boom";
 
 import supabase from "../config/supabase";
 
@@ -7,9 +8,7 @@ export const createVote = async (req: Request, res: Response) => {
     const { sessionId, optionId, voterName } = req.body;
 
     if (!sessionId || !optionId || !voterName) {
-      return res.status(400).json({
-        error: "sessionId, optionId and voterName are required",
-      });
+      throw Boom.badRequest("sessionId, optionId and voterName are required");
     }
 
     const { data, error } = await supabase
@@ -25,9 +24,7 @@ export const createVote = async (req: Request, res: Response) => {
       .single();
 
     if (error) {
-      return res.status(500).json({
-        error: error.message,
-      });
+      throw Boom.internal(error.message);
     }
 
     return res.status(201).json({
@@ -35,8 +32,14 @@ export const createVote = async (req: Request, res: Response) => {
       vote: data,
     });
   } catch (error: any) {
+    if (Boom.isBoom(error)) {
+      return res.status(error.output.statusCode).json({
+        error: error.message,
+      });
+    }
+
     return res.status(500).json({
-      error: error.message,
+      error: "Internal server error",
     });
   }
 };

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-
+import Boom from "@hapi/boom";
 import supabase from "../config/supabase";
 
 const generateCode = () => {
@@ -11,9 +11,9 @@ export const createSession = async (req: Request, res: Response) => {
     const { hostId, title, question, options } = req.body;
 
     if (!hostId || !title || !question || !options || options.length < 2) {
-      return res.status(400).json({
-        error: "hostId, title, question and at least two options are required",
-      });
+      throw Boom.badRequest(
+        "hostId, title, question and at least two options are required",
+      );
     }
 
     const code = generateCode();
@@ -33,9 +33,7 @@ export const createSession = async (req: Request, res: Response) => {
       .single();
 
     if (sessionError) {
-      return res.status(500).json({
-        error: sessionError.message,
-      });
+      throw Boom.internal(sessionError.message);
     }
 
     const formattedOptions = options.map((option: string) => ({
@@ -49,9 +47,7 @@ export const createSession = async (req: Request, res: Response) => {
       .select();
 
     if (optionsError) {
-      return res.status(500).json({
-        error: optionsError.message,
-      });
+      throw Boom.internal(optionsError.message);
     }
 
     return res.status(201).json({
@@ -60,9 +56,11 @@ export const createSession = async (req: Request, res: Response) => {
       options: createdOptions,
     });
   } catch (error: any) {
-    return res.status(500).json({
-      error: error.message,
-    });
+    if (Boom.isBoom(error)) {
+      return res.status(error.output.statusCode).json(error.output.payload);
+    }
+
+    return res.status(500).json(Boom.internal(error.message).output.payload);
   }
 };
 
@@ -79,16 +77,16 @@ export const getSessionsByHost = async (req: Request, res: Response) => {
       });
 
     if (error) {
-      return res.status(500).json({
-        error: error.message,
-      });
+      throw Boom.internal(error.message);
     }
 
     return res.status(200).json(data);
   } catch (error: any) {
-    return res.status(500).json({
-      error: error.message,
-    });
+    if (Boom.isBoom(error)) {
+      return res.status(error.output.statusCode).json(error.output.payload);
+    }
+
+    return res.status(500).json(Boom.internal(error.message).output.payload);
   }
 };
 
@@ -102,9 +100,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       .eq("host_id", hostId);
 
     if (sessionsError) {
-      return res.status(500).json({
-        error: sessionsError.message,
-      });
+      throw Boom.internal(sessionsError.message);
     }
 
     const sessionIds = sessions.map((session: any) => session.id);
@@ -115,9 +111,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       .in("session_id", sessionIds);
 
     if (votesError) {
-      return res.status(500).json({
-        error: votesError.message,
-      });
+      throw Boom.internal(votesError.message);
     }
 
     const totalVotes = votes.length;
@@ -127,7 +121,6 @@ export const getDashboardStats = async (req: Request, res: Response) => {
     ).length;
 
     let topSession = null;
-
     let maxVotes = 0;
 
     sessions.forEach((session: any) => {
@@ -137,7 +130,6 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
       if (sessionVotes > maxVotes) {
         maxVotes = sessionVotes;
-
         topSession = session;
       }
     });
@@ -149,9 +141,11 @@ export const getDashboardStats = async (req: Request, res: Response) => {
       topSession,
     });
   } catch (error: any) {
-    return res.status(500).json({
-      error: error.message,
-    });
+    if (Boom.isBoom(error)) {
+      return res.status(error.output.statusCode).json(error.output.payload);
+    }
+
+    return res.status(500).json(Boom.internal(error.message).output.payload);
   }
 };
 
@@ -166,9 +160,7 @@ export const getSessionById = async (req: Request, res: Response) => {
       .single();
 
     if (sessionError) {
-      return res.status(500).json({
-        error: sessionError.message,
-      });
+      throw Boom.notFound("Session not found");
     }
 
     const { data: options, error: optionsError } = await supabase
@@ -177,9 +169,7 @@ export const getSessionById = async (req: Request, res: Response) => {
       .eq("session_id", sessionId);
 
     if (optionsError) {
-      return res.status(500).json({
-        error: optionsError.message,
-      });
+      throw Boom.internal(optionsError.message);
     }
 
     return res.status(200).json({
@@ -187,9 +177,11 @@ export const getSessionById = async (req: Request, res: Response) => {
       options,
     });
   } catch (error: any) {
-    return res.status(500).json({
-      error: error.message,
-    });
+    if (Boom.isBoom(error)) {
+      return res.status(error.output.statusCode).json(error.output.payload);
+    }
+
+    return res.status(500).json(Boom.internal(error.message).output.payload);
   }
 };
 
@@ -205,9 +197,7 @@ export const getSessionByCode = async (req: Request, res: Response) => {
       .maybeSingle();
 
     if (sessionError || !session) {
-      return res.status(404).json({
-        error: "Active session not found",
-      });
+      throw Boom.notFound("Active session not found");
     }
 
     const { data: options, error: optionsError } = await supabase
@@ -216,9 +206,7 @@ export const getSessionByCode = async (req: Request, res: Response) => {
       .eq("session_id", session.id);
 
     if (optionsError) {
-      return res.status(500).json({
-        error: optionsError.message,
-      });
+      throw Boom.internal(optionsError.message);
     }
 
     return res.status(200).json({
@@ -226,9 +214,11 @@ export const getSessionByCode = async (req: Request, res: Response) => {
       options,
     });
   } catch (error: any) {
-    return res.status(500).json({
-      error: error.message,
-    });
+    if (Boom.isBoom(error)) {
+      return res.status(error.output.statusCode).json(error.output.payload);
+    }
+
+    return res.status(500).json(Boom.internal(error.message).output.payload);
   }
 };
 
@@ -242,9 +232,7 @@ export const getSessionResults = async (req: Request, res: Response) => {
       .eq("session_id", sessionId);
 
     if (optionsError) {
-      return res.status(500).json({
-        error: optionsError.message,
-      });
+      throw Boom.internal(optionsError.message);
     }
 
     const { data: votes, error: votesError } = await supabase
@@ -253,9 +241,7 @@ export const getSessionResults = async (req: Request, res: Response) => {
       .eq("session_id", sessionId);
 
     if (votesError) {
-      return res.status(500).json({
-        error: votesError.message,
-      });
+      throw Boom.internal(votesError.message);
     }
 
     const results = options.map((option: any) => {
@@ -276,9 +262,11 @@ export const getSessionResults = async (req: Request, res: Response) => {
       results,
     });
   } catch (error: any) {
-    return res.status(500).json({
-      error: error.message,
-    });
+    if (Boom.isBoom(error)) {
+      return res.status(error.output.statusCode).json(error.output.payload);
+    }
+
+    return res.status(500).json(Boom.internal(error.message).output.payload);
   }
 };
 
@@ -296,9 +284,7 @@ export const closeSession = async (req: Request, res: Response) => {
       .single();
 
     if (error) {
-      return res.status(500).json({
-        error: error.message,
-      });
+      throw Boom.internal(error.message);
     }
 
     return res.status(200).json({
@@ -306,8 +292,10 @@ export const closeSession = async (req: Request, res: Response) => {
       session: data,
     });
   } catch (error: any) {
-    return res.status(500).json({
-      error: error.message,
-    });
+    if (Boom.isBoom(error)) {
+      return res.status(error.output.statusCode).json(error.output.payload);
+    }
+
+    return res.status(500).json(Boom.internal(error.message).output.payload);
   }
 };

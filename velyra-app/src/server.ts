@@ -6,12 +6,13 @@ import authRoutes from "./routes/authRoutes";
 import sessionRoutes from "./routes/sessionRoutes";
 import voteRoutes from "./routes/voteRoutes";
 
+import { errorHandler } from "./middlewares/errorHandler";
+
 dotenv.config();
 
 const app = express();
 
 app.use(cors());
-
 app.use(express.json());
 
 app.get("/", (_req, res) => {
@@ -21,10 +22,10 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-
 app.use("/api/sessions", sessionRoutes);
-
 app.use("/api/votes", voteRoutes);
+
+app.use(errorHandler);
 
 const PORT = Number(process.env.PORT) || 3000;
 
