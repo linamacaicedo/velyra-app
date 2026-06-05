@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Boom from "@hapi/boom";
 import supabase from "../config/supabase";
+import { getSocket } from "../socket";
 
 export const createVote = async (
   req: Request,
@@ -29,6 +30,13 @@ export const createVote = async (
     if (error) {
       throw Boom.badImplementation(error.message);
     }
+
+    const io = getSocket();
+
+    io.to(sessionId).emit("vote-created", {
+      sessionId,
+      vote: data,
+    });
 
     return res.status(201).json({
       message: "Vote submitted successfully",
