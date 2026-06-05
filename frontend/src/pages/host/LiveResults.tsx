@@ -45,7 +45,9 @@ const LiveResults = () => {
           loadResults();
         },
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log("Realtime status:", status);
+      });
 
     return () => {
       supabase.removeChannel(channel);
@@ -79,9 +81,7 @@ const LiveResults = () => {
               <div className="progress-bar">
                 <div
                   className="progress-fill"
-                  style={{
-                    width: `${percentage}%`,
-                  }}
+                  style={{ width: `${percentage}%` }}
                 />
               </div>
 
