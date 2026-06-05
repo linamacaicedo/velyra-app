@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-
 import { useNavigate, useParams } from "react-router-dom";
-
 import { QRCodeCanvas } from "qrcode.react";
 
 import { getSessionById, closeSession } from "../../api/sessionsApi";
@@ -10,11 +8,9 @@ import "./SessionDetails.css";
 
 const SessionDetails = () => {
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   const [session, setSession] = useState<any>(null);
-
   const [options, setOptions] = useState<any[]>([]);
 
   useEffect(() => {
@@ -25,7 +21,6 @@ const SessionDetails = () => {
         const data = await getSessionById(id);
 
         setSession(data.session);
-
         setOptions(data.options);
       } catch (error) {
         console.error(error);
@@ -50,11 +45,9 @@ const SessionDetails = () => {
     }
   };
 
-  if (!session) {
-    return <h1>Loading...</h1>;
-  }
+  if (!session) return <h1>Loading...</h1>;
 
-  const voteUrl = `https://velyra-app-qsp3.vercel.app/vote/session/${session.code}`;
+  const voteUrl = `${window.location.origin}/vote/session/${session.code}`;
 
   return (
     <div className="session-details-page">
@@ -69,9 +62,7 @@ const SessionDetails = () => {
         <div className="session-header">
           <div>
             <p className="session-label">Live Session</p>
-
             <h1>{session.title}</h1>
-
             <h2>{session.question}</h2>
           </div>
 
@@ -86,7 +77,6 @@ const SessionDetails = () => {
 
         <div className="session-code-box">
           <p>Session Code</p>
-
           <h3>{session.code}</h3>
         </div>
 
