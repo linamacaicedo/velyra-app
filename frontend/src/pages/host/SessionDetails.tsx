@@ -47,7 +47,7 @@ const SessionDetails = () => {
 
   if (!session) return <h1>Loading...</h1>;
 
-  const voteUrl = `${window.location.origin}/vote/session/${session.code}`;
+  const voteUrl = `https://velyra-app-qsp3.vercel.app/vote/session/${session.code}`;
 
   return (
     <div className="session-details-page">
