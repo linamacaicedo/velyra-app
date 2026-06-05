@@ -1,13 +1,15 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import Boom from "@hapi/boom";
 import supabase from "../config/supabase";
 
-export const registerHost = async (req: Request, res: Response) => {
+export const registerHost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const name = req.body.name?.trim();
-
     const email = req.body.email?.trim().toLowerCase();
-
     const password = req.body.password?.trim();
 
     if (!name || !email || !password) {
@@ -45,11 +47,15 @@ export const registerHost = async (req: Request, res: Response) => {
       host: data,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 };
 
-export const loginHost = async (req: Request, res: Response) => {
+export const loginHost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { email, password } = req.body;
 
@@ -76,6 +82,6 @@ export const loginHost = async (req: Request, res: Response) => {
       host: data,
     });
   } catch (error) {
-    throw error;
+    next(error);
   }
 };

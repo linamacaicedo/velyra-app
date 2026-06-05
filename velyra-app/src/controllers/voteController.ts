@@ -1,9 +1,12 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import Boom from "@hapi/boom";
-
 import supabase from "../config/supabase";
 
-export const createVote = async (req: Request, res: Response) => {
+export const createVote = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { sessionId, optionId, voterName } = req.body;
 
@@ -24,22 +27,14 @@ export const createVote = async (req: Request, res: Response) => {
       .single();
 
     if (error) {
-      throw Boom.internal(error.message);
+      throw Boom.badImplementation(error.message);
     }
 
     return res.status(201).json({
       message: "Vote submitted successfully",
       vote: data,
     });
-  } catch (error: any) {
-    if (Boom.isBoom(error)) {
-      return res.status(error.output.statusCode).json({
-        error: error.message,
-      });
-    }
-
-    return res.status(500).json({
-      error: "Internal server error",
-    });
+  } catch (error) {
+    next(error);
   }
 };

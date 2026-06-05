@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import sessionRoutes from "./routes/sessionRoutes";
 import voteRoutes from "./routes/voteRoutes";
-
 import { errorHandler } from "./middlewares/errorHandler";
 
 dotenv.config();
