@@ -1,28 +1,19 @@
 import { useEffect, useState } from "react";
-
 import { useNavigate, useParams } from "react-router-dom";
 
 import { createVote } from "../../api/votesApi";
-
 import { getSessionByCode } from "../../api/sessionsApi";
 
 function VotePage() {
   const navigate = useNavigate();
-
   const { code } = useParams();
 
   const [session, setSession] = useState<any>(null);
-
   const [options, setOptions] = useState<any[]>([]);
-
   const [voterName, setVoterName] = useState("");
-
   const [selectedOption, setSelectedOption] = useState("");
-
   const [error, setError] = useState("");
-
   const [loading, setLoading] = useState(false);
-
   const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
@@ -33,7 +24,6 @@ function VotePage() {
         const data = await getSessionByCode(code);
 
         setSession(data.session);
-
         setOptions(data.options);
       } catch (error: any) {
         setError(error.message);
@@ -48,16 +38,19 @@ function VotePage() {
   const handleVote = async () => {
     try {
       setLoading(true);
-
       setError("");
 
-      if (!voterName || !selectedOption) {
+      if (!voterName.trim() || !selectedOption) {
         setError("Please enter your name and select an option");
-
         return;
       }
 
-      await createVote(session.id, selectedOption, voterName);
+      if (!session?.id) {
+        setError("Session not found");
+        return;
+      }
+
+      await createVote(session.id, selectedOption, voterName.trim());
 
       navigate("/thank-you");
     } catch (error: any) {
@@ -67,13 +60,9 @@ function VotePage() {
     }
   };
 
-  if (pageLoading) {
-    return <h1>Loading...</h1>;
-  }
+  if (pageLoading) return <h1>Loading...</h1>;
 
-  if (!session) {
-    return <h1>Session not found</h1>;
-  }
+  if (!session) return <h1>Session not found</h1>;
 
   return (
     <div
@@ -96,21 +85,11 @@ function VotePage() {
           boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
         }}
       >
-        <h1
-          style={{
-            color: "#4338CA",
-            marginBottom: "8px",
-          }}
-        >
+        <h1 style={{ color: "#4338CA", marginBottom: "8px" }}>
           {session.title}
         </h1>
 
-        <p
-          style={{
-            color: "#555",
-            marginBottom: "24px",
-          }}
-        >
+        <p style={{ color: "#555", marginBottom: "24px" }}>
           {session.question}
         </p>
 
@@ -129,13 +108,7 @@ function VotePage() {
           }}
         />
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "12px",
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {options.map((option: any) => (
             <button
               key={option.id}
@@ -180,13 +153,7 @@ function VotePage() {
         </button>
 
         {error && (
-          <p
-            style={{
-              color: "red",
-              marginTop: "16px",
-              textAlign: "center",
-            }}
-          >
+          <p style={{ color: "red", marginTop: "16px", textAlign: "center" }}>
             {error}
           </p>
         )}
