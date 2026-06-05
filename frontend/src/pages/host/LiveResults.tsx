@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { getSessionResults } from "../../api/sessionsApi";
-import { supabase } from "../../services/supabase";
+import { socket } from "../../services/socket";
 
 import "./LiveResults.css";
 
@@ -31,26 +31,20 @@ const LiveResults = () => {
 
     loadResults();
 
-    const channel = supabase
-      .channel(`live-results-${sessionId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "votes",
-          filter: `session_id=eq.${sessionId}`,
-        },
-        () => {
-          loadResults();
-        },
-      )
-      .subscribe((status) => {
-        console.log("Realtime status:", status);
-      });
+    socket.emit("join-session", sessionId);
+
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);
+      socket.emit("join-session", sessionId);
+    });
+
+    socket.on("vote-created", () => {
+      loadResults();
+    });
 
     return () => {
-      supabase.removeChannel(channel);
+      socket.off("connect");
+      socket.off("vote-created");
     };
   }, [sessionId]);
 
