@@ -33,18 +33,27 @@ const LiveResults = () => {
 
     socket.emit("join-session", sessionId);
 
-    socket.on("connect", () => {
+    const handleConnect = () => {
       console.log("Socket connected:", socket.id);
       socket.emit("join-session", sessionId);
-    });
+    };
 
-    socket.on("vote-created", () => {
+    const handleVoteCreated = () => {
+      console.log("Vote received by socket");
       loadResults();
-    });
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("vote-created", handleVoteCreated);
+
+    const interval = setInterval(() => {
+      loadResults();
+    }, 2000);
 
     return () => {
-      socket.off("connect");
-      socket.off("vote-created");
+      socket.off("connect", handleConnect);
+      socket.off("vote-created", handleVoteCreated);
+      clearInterval(interval);
     };
   }, [sessionId]);
 
@@ -75,7 +84,9 @@ const LiveResults = () => {
               <div className="progress-bar">
                 <div
                   className="progress-fill"
-                  style={{ width: `${percentage}%` }}
+                  style={{
+                    width: `${percentage}%`,
+                  }}
                 />
               </div>
 
